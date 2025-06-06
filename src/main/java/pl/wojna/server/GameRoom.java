@@ -19,9 +19,12 @@ public class GameRoom implements Runnable {
     private final Player player1 = new Player();
     private final Player player2 = new Player();
 
-    public GameRoom(ClientHandler player1Handler, ClientHandler player2Handler) {
+    public final int iloscKart;
+
+    public GameRoom(ClientHandler player1Handler, ClientHandler player2Handler, int iloscKart) {
         this.player1Handler = player1Handler;
         this.player2Handler = player2Handler;
+        this.iloscKart = iloscKart;
 
         // 🟨 DODANO: powiązanie handlera z pokojem
         player1Handler.setGameRoom(this);
@@ -102,7 +105,8 @@ public class GameRoom implements Runnable {
     private void dealCards() {
         List<Card> fullDeck = Deck.createFullDeck(); // potasowany zestaw 52 kart
 
-        for (int i = 0; i < 26; i++) {
+
+        for (int i = 0; i < iloscKart/2; i++) {
             player1.getDeck().add(fullDeck.remove(0));
             player2.getDeck().add(fullDeck.remove(0));
         }

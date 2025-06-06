@@ -21,7 +21,7 @@ public class ClientHandler implements Runnable
     @Override
     public void run()
     {
-        System.out.println(" Obsługuję gracza #" + playerId);
+        System.out.println(" Obsluguję gracza #" + playerId);
 
         try
         {
@@ -49,7 +49,7 @@ public class ClientHandler implements Runnable
                     }
                 }
                 else if (message.equalsIgnoreCase("EXIT")) {
-                    sendMessage("Rozłączam...");
+                    sendMessage("Rozlaczam...");
                     break;
                 }
 
@@ -62,7 +62,7 @@ public class ClientHandler implements Runnable
         }
         catch (IOException e)
         {
-            System.err.println(" Błąd po stronie gracza #" + playerId);
+            System.err.println(" Blad po stronie gracza #" + playerId);
             e.printStackTrace();
         }
         finally
@@ -70,7 +70,7 @@ public class ClientHandler implements Runnable
             try
             {
                 socket.close();
-                System.out.println(" Gracz #" + playerId + " rozłączony.");
+                System.out.println(" Gracz #" + playerId + " rozlaczony.");
             }
             catch (IOException e)
             {

@@ -156,7 +156,7 @@ public class GameServer
 
             System.out.println(" Tworzenie nowego pokoju: " + player1.getPlayerId() + " vs " + player2.getPlayerId());
 
-            GameRoom room = new GameRoom(player1, player2);
+            GameRoom room = new GameRoom(player1, player2, 52);
             new Thread(room).start();
         }
     }

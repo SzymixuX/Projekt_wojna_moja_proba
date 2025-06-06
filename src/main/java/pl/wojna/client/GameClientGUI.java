@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -38,9 +39,10 @@ public class GameClientGUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        connectToServer();
+        showConnectionScreen(primaryStage);
 
-        deckCountLabel = new Label("Twoje karty: " + deckCount);
+        /*
+        deckCountLabel = new Label("Twoje karty: " + 26);
         statusLabel = new Label("Czekam na rozpoczęcie gry...");
 
         playerCardView = new ImageView();
@@ -74,12 +76,13 @@ public class GameClientGUI extends Application {
         primaryStage.setTitle("Gra w Wojnę - Klient");
         primaryStage.setScene(scene);
         primaryStage.show();
+         */
     }
 
-    private void connectToServer() {
+    private void connectToServer(String ip, int port) {
         new Thread(() -> {
             try {
-                socket = new Socket("localhost", 5000);
+                socket = new Socket(ip, port);
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 out = new PrintWriter(socket.getOutputStream(), true);
 
@@ -91,15 +94,15 @@ public class GameClientGUI extends Application {
                     Platform.runLater(() -> handleServerMessage(finalLine));
                 }
             } catch (IOException e) {
-                Platform.runLater(() -> statusLabel.setText("Błąd połączenia z serwerem."));
-                e.printStackTrace();
+                Platform.runLater(() -> statusLabel.setText("Blad polaczenia z serwerem."));
             }
         }).start();
     }
 
+
     private void handleServerMessage(String message) {
         if (message.startsWith("START")) {
-            statusLabel.setText("Gra rozpoczęta!");
+            statusLabel.setText("Gra rozpoczeta!");
             playButton.setDisable(false);
         } else if (message.startsWith("CARD:")) {
             String card = message.substring(5).trim();
@@ -159,7 +162,7 @@ public class GameClientGUI extends Application {
 
             filename = value + filename.charAt(filename.length() - 1) + ".gif";
 
-            System.out.println(" Ładuję plik: /cards/" + filename);
+            System.out.println(" laduje plik: /cards/" + filename);
 
             var stream = getClass().getResourceAsStream("/cards/" + filename);
             if (stream == null) {
@@ -173,6 +176,68 @@ public class GameClientGUI extends Application {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private void showConnectionScreen(Stage primaryStage)
+    {
+        TextField ipField = new TextField("localhost");
+        TextField portField = new TextField("5000");
+        Button connectBtn = new Button("Połącz");
+
+        Label info = new Label("Podaj IP i port serwera:");
+
+        VBox vbox = new VBox(10, info, ipField, portField, connectBtn);
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setPadding(new Insets(20));
+
+        Scene connectScene = new Scene(vbox, 300, 200);
+        primaryStage.setScene(connectScene);
+        primaryStage.show();
+
+        connectBtn.setOnAction(e -> {
+            String ip = ipField.getText();
+            int port = Integer.parseInt(portField.getText());
+            connectToServer(ip, port);  // przekazujemy IP i port
+            showGameUI(primaryStage);   // uruchamiamy interfejs gry
+        });
+    }
+
+
+    private void showGameUI(Stage primaryStage) {
+        deckCountLabel = new Label("Twoje karty: " + 26);
+        statusLabel = new Label("Czekam na rozpoczęcie gry...");
+
+        playerCardView = new ImageView();
+        opponentCardView = new ImageView();
+        playerCardView.setFitWidth(100);
+        playerCardView.setFitHeight(150);
+        opponentCardView.setFitWidth(100);
+        opponentCardView.setFitHeight(150);
+
+        playButton = new Button("ZAGRAJ KARTĘ");
+        playButton.setDisable(true);
+        playButton.setOnAction(e -> out.println("PLAY"));
+
+        VBox topBox = new VBox(10, deckCountLabel, statusLabel);
+        topBox.setAlignment(Pos.CENTER);
+        topBox.setPadding(new Insets(10));
+
+        HBox cardBox = new HBox(40, playerCardView, opponentCardView);
+        cardBox.setAlignment(Pos.CENTER);
+
+        VBox bottomBox = new VBox(playButton);
+        bottomBox.setAlignment(Pos.CENTER);
+        bottomBox.setPadding(new Insets(10));
+
+        BorderPane root = new BorderPane();
+        root.setTop(topBox);
+        root.setCenter(cardBox);
+        root.setBottom(bottomBox);
+
+        Scene scene = new Scene(root, 400, 300);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Gra w Wojnę – Klient");
+        primaryStage.show();
     }
 
 }
