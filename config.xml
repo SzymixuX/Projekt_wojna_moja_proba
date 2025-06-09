@@ -1,0 +1,8 @@
+﻿<config>
+    <serverPort>5000</serverPort>
+    <db>
+        <url>jdbc:mysql://localhost:3306/wojna</url>
+        <user>root</user>
+        <password></password>
+    </db>
+</config>
