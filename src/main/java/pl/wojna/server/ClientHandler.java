@@ -25,8 +25,8 @@ public class ClientHandler implements Runnable
 
         try
         {
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));  //  ZMIANA: zapisujemy do pola
-            out = new PrintWriter(socket.getOutputStream(), true); // ZMIANA: zapisujemy do pola
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream(), true);
 
             sendMessage("Witaj Graczu #" + playerId + "! Wpisz READY, gdy będziesz gotowy.");
 
@@ -35,14 +35,14 @@ public class ClientHandler implements Runnable
             {
                 System.out.println(" Gracz #" + playerId + ": " + message);
 
-                // DODANO: obsługa komendy READY
+
                 if (message.equalsIgnoreCase("READY"))
                 {
                     sendMessage("OK – czekam na drugiego gracza...");
                     GameServer.registerReadyClient(this);
                 }
 
-                //DODANO: rozłączenie
+
                 else if (message.equalsIgnoreCase("PLAY")) {
                     if (gameRoom != null) {
                         gameRoom.registerPlay(this);
@@ -53,7 +53,7 @@ public class ClientHandler implements Runnable
                     break;
                 }
 
-                // DODANO: echo dla debugowania
+
                 else
                 {
                     sendMessage("Echo: " + message);
@@ -79,7 +79,6 @@ public class ClientHandler implements Runnable
         }
     }
 
-    // DODANO: metoda pomocnicza do wysyłania wiadomości
     public void sendMessage(String message)
     {
         out.println(message);

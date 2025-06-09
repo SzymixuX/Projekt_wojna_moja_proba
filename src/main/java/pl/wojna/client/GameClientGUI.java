@@ -41,47 +41,15 @@ public class GameClientGUI extends Application {
     public void start(Stage primaryStage) {
         showConnectionScreen(primaryStage);
 
-        /*
-        deckCountLabel = new Label("Twoje karty: " + 26);
-        statusLabel = new Label("Czekam na rozpoczęcie gry...");
 
-        playerCardView = new ImageView();
-        opponentCardView = new ImageView();
-        playerCardView.setFitWidth(100);
-        playerCardView.setFitHeight(150);
-        opponentCardView.setFitWidth(100);
-        opponentCardView.setFitHeight(150);
-
-        playButton = new Button("ZAGRAJ KARTĘ");
-        playButton.setDisable(true);
-        playButton.setOnAction(e -> out.println("PLAY"));
-
-        VBox topBox = new VBox(10, deckCountLabel, statusLabel);
-        topBox.setAlignment(Pos.CENTER);
-        topBox.setPadding(new Insets(10));
-
-        HBox cardBox = new HBox(40, playerCardView, opponentCardView);
-        cardBox.setAlignment(Pos.CENTER);
-
-        VBox bottomBox = new VBox(playButton);
-        bottomBox.setAlignment(Pos.CENTER);
-        bottomBox.setPadding(new Insets(10));
-
-        BorderPane root = new BorderPane();
-        root.setTop(topBox);
-        root.setCenter(cardBox);
-        root.setBottom(bottomBox);
-
-        Scene scene = new Scene(root, 400, 300);
-        primaryStage.setTitle("Gra w Wojnę - Klient");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-         */
     }
 
-    private void connectToServer(String ip, int port) {
-        new Thread(() -> {
-            try {
+    private void connectToServer(String ip, int port)
+    {
+        new Thread(() ->
+        {
+            try
+            {
                 socket = new Socket(ip, port);
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 out = new PrintWriter(socket.getOutputStream(), true);
@@ -89,11 +57,14 @@ public class GameClientGUI extends Application {
                 out.println("READY");
 
                 String line;
-                while ((line = in.readLine()) != null) {
+                while ((line = in.readLine()) != null)
+                {
                     String finalLine = line;
                     Platform.runLater(() -> handleServerMessage(finalLine));
                 }
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 Platform.runLater(() -> statusLabel.setText("Blad polaczenia z serwerem."));
             }
         }).start();
@@ -133,14 +104,17 @@ public class GameClientGUI extends Application {
         }
     }
 
-    private Image loadCardImage(String cardCode) {
-        try {
-            System.out.println("Odbieram kartę: " + cardCode);
+    private Image loadCardImage(String cardCode)
+    {
+        try
+        {
+            System.out.println("Odbieram karte: " + cardCode);
 
             String value = cardCode.substring(0, cardCode.length() - 1);
             String suit = cardCode.substring(cardCode.length() - 1);
 
-            String filename = switch (suit) {
+            String filename = switch (suit)
+            {
                 case "H" -> value + "h";
                 case "S" -> value + "s";
                 case "D" -> value + "d";
@@ -148,7 +122,8 @@ public class GameClientGUI extends Application {
                 default -> "back";
             };
 
-            if ("JQKA".contains(value)) {
+            if ("JQKA".contains(value))
+            {
                 value = switch (value) {
                     case "J" -> "11";
                     case "Q" -> "12";
@@ -156,7 +131,9 @@ public class GameClientGUI extends Application {
                     case "A" -> "01";
                     default -> value;
                 };
-            } else if (value.length() == 1) {
+            }
+
+            else if (value.length() == 1) {
                 value = "0" + value;
             }
 
@@ -165,14 +142,17 @@ public class GameClientGUI extends Application {
             System.out.println(" laduje plik: /cards/" + filename);
 
             var stream = getClass().getResourceAsStream("/cards/" + filename);
-            if (stream == null) {
+            if (stream == null)
+            {
                 System.out.println(" Brak pliku: " + filename);
                 return null;
             }
 
             return new Image(stream);
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
             return null;
         }
@@ -203,7 +183,8 @@ public class GameClientGUI extends Application {
     }
 
 
-    private void showGameUI(Stage primaryStage) {
+    private void showGameUI(Stage primaryStage)
+    {
         deckCountLabel = new Label("Twoje karty: " + 26);
         statusLabel = new Label("Czekam na rozpoczęcie gry...");
 

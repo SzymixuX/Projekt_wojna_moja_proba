@@ -1,9 +1,11 @@
 package pl.wojna.server;
 
 import java.io.IOException;
+import java.io.ObjectInputFilter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import pl.wojna.config.ConfigLoader;
 import pl.wojna.model.Card;
 import pl.wojna.model.Deck;
 import pl.wojna.model.Player;
@@ -13,12 +15,12 @@ import java.util.*;
 
 public class GameServer
 {
-    public static final int PORT = 5000;
 
-    // 🟨 DODANO: tablica do przechowywania klientów
+    //public static final int PORT = 5000;
+
     private static final ClientHandler[] clients = new ClientHandler[2];
 
-    // 🟨 DODANO: licznik READY
+
     private static volatile int readyCount = 0;
 
     private static List<Card> player1Deck = new ArrayList<>();
@@ -32,6 +34,8 @@ public class GameServer
 
     public static void main(String[] args)
     {
+        ConfigLoader.load();
+        int PORT = ConfigLoader.getServerPort();
         System.out.println(" Serwer gry uruchomiony na porcie " + PORT);
 
         try (ServerSocket serverSocket = new ServerSocket(PORT))
@@ -52,7 +56,7 @@ public class GameServer
         }
     }
 
-    // 🟨 DODANO: metoda synchronizująca READY
+
     public static synchronized void playerReady()
     {
         readyCount++;
@@ -64,7 +68,7 @@ public class GameServer
     }
 
 
-    // 🟨 DODANO: start gry – wysyłanie kart, wyników
+
     private static void startGame()
     {
         for (ClientHandler ch : clients)
@@ -72,10 +76,8 @@ public class GameServer
             ch.sendMessage("START");
         }
 
-        dealCards(); // 🟨 rozdajemy całą talię
+        dealCards();
 
-        //player1.reloadIfNeeded(); // 🟨 jeśli deck pusty – przeładuj
-        //player2.reloadIfNeeded();
 
         if (player1.getDeck().isEmpty() || player2.getDeck().isEmpty())
         {
@@ -84,7 +86,7 @@ public class GameServer
             return;
         }
 
-        // 🟨 wyciągamy ostatnią kartę
+         //wyciągamy ostatnią kartę
         Card card1 = player1.getDeck().removeLast();
         Card card2 = player2.getDeck().removeLast();
 
@@ -110,7 +112,7 @@ public class GameServer
         }
         else
         {
-            // 🟨 remis: karty wracają do decków
+
             player1.getDeck().addFirst(card1);
             player2.getDeck().addFirst(card2);
             clients[0].sendMessage("RESULT:0\nDRAW");
@@ -122,7 +124,7 @@ public class GameServer
             ch.sendMessage("END");
         }
     }
-    // DODANO: pomocnicza metoda do oceny siły karty
+
     private static int convertToStrength(String card)
     {
         String value = card.length() == 3 ? card.substring(0, 2) : card.substring(0, 1);

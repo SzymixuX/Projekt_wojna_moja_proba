@@ -1,5 +1,6 @@
 package pl.wojna.server;
 
+import pl.wojna.database.BazaDanych;
 import pl.wojna.model.Card;
 import pl.wojna.model.Deck;
 import pl.wojna.model.Player;
@@ -105,11 +106,25 @@ public class GameRoom implements Runnable {
     private void dealCards() {
         List<Card> fullDeck = Deck.createFullDeck(); // potasowany zestaw 52 kart
 
-
+    /*
         for (int i = 0; i < iloscKart/2; i++) {
             player1.getDeck().add(fullDeck.remove(0));
             player2.getDeck().add(fullDeck.remove(0));
         }
+
+        */
+
+        BazaDanych.initialize();
+        for (int i = 0; i < iloscKart/2; i++) {
+            Card card1 = fullDeck.remove(0);
+            Card card2 = fullDeck.remove(0);
+            player1.getDeck().add(card1);
+            player2.getDeck().add(card2);
+            BazaDanych.saveDeck(1, card1.toString());
+            BazaDanych.saveDeck(2, card2.toString());
+        }
+
+
 
         // logowanie do testów
         System.out.println("Player 1 start deck: " + player1.getDeck());
