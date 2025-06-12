@@ -58,7 +58,7 @@ public class GameRoom implements Runnable
     {
         if (!isWar)
         {
-            // 🔹 Normalna runda
+            //  Normalna runda
             Card card1 = player1.getDeck().pollFirst();
             Card card2 = player2.getDeck().pollFirst();
 
@@ -270,24 +270,40 @@ public class GameRoom implements Runnable
         player1.getDeck().add(new Card("A", "S"));  // AS
         player1.getDeck().add(new Card("6", "H"));  // 6H
         player1.getDeck().add(new Card("2", "C"));  // 2C
-        player1.getDeck().add(new Card("9", "H"));  // 2C
+        player1.getDeck().add(new Card("9", "H"));  // 9H
         player1.getDeck().add(new Card("A", "C"));  // AC
-        player1.getDeck().add(new Card("10", "C"));  // 2C
+        player1.getDeck().add(new Card("10", "C"));  // 10C
 
 
         player2.getDeck().add(new Card("5", "S"));  // 5S
         player2.getDeck().add(new Card("7", "D"));  // 7D
         player2.getDeck().add(new Card("Q", "H"));  // QH
-        player2.getDeck().add(new Card("6", "S"));  // 4S
+        player2.getDeck().add(new Card("6", "S"));  // 6S
         player2.getDeck().add(new Card("8", "C"));  // 8C
-        player2.getDeck().add(new Card("9", "C"));  // 8C
-        player2.getDeck().add(new Card("4", "C"));  // 8C
+        player2.getDeck().add(new Card("9", "C"));  // 9C
+        player2.getDeck().add(new Card("4", "C"));  // 4C
         player2.getDeck().add(new Card("8", "C"));  // 8C
 
         System.out.println("Załadowano testowe decki do debugowania.");
 
         System.out.println("Player 1 start deck: " + player1.getDeck());
         System.out.println("Player 2 start deck: " + player2.getDeck());
+
+        int iloscKart = 16;
+
+
+        BazaDanych.initialize();
+        for (int i = 0; i < iloscKart/2; i++)
+        {
+            Card card1 = player1.getDeck().remove(0);
+            Card card2 = player2.getDeck().remove(0);
+            player1.getDeck().add(card1);
+            player2.getDeck().add(card2);
+            BazaDanych.saveDeck(1, card1.toString());
+            BazaDanych.saveDeck(2, card2.toString());
+        }
+
+
     }
 
 }

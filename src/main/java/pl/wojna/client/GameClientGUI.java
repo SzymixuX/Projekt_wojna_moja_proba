@@ -82,7 +82,6 @@ public class GameClientGUI extends Application
 
     private void handleServerMessage(String message)
     {
-        System.out.println("[ODBIERAM]: " + message);
 
         if (message.startsWith("START")) {
             statusLabel.setText("Gra rozpoczeta!");
